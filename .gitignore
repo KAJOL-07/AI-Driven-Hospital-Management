@@ -1,0 +1,39 @@
+# ============================================================
+# Root .gitignore - Protects Secrets and Build Artifacts
+# ============================================================
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Secrets & Environment variables - NEVER COMMIT
+.env
+.env.*
+*.env
+backend/.env
+frontend/.env
+**/.env
+**/.env.*
+
+# Build artifacts
+dist/
+*/dist/
+build/
+*/build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+**/*.log
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Agent/Temporary scratch files
+.system_generated/
+scratch/
