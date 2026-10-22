@@ -19,6 +19,7 @@ router.use(requireAuth);
 
 router.get("/", getAllBeds);
 router.get("/floor-stats", getFloorStats);
+router.get("/floor-summary", getFloorStats);
 router.get("/stats", getBedStats);
 router.get("/available", getAvailableBeds);
 router.post("/ground-floor/configure", requireRole("admin"), configureGroundFloorBeds);
