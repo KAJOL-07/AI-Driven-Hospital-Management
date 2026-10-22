@@ -65,6 +65,26 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// Ensure database connection is ready for both server and serverless environments
+let dbPromise = null;
+app.use(async (req, res, next) => {
+  try {
+    if (!dbPromise) {
+      dbPromise = testConnection();
+    }
+    await dbPromise;
+    next();
+  } catch (err) {
+    dbPromise = null;
+    console.error("Database connection error in request:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Database connection failure",
+      error: process.env.NODE_ENV === "development" ? err.message : "DATABASE_UNAVAILABLE"
+    });
+  }
+});
+
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (req, res) => {
   res.json({
@@ -128,4 +148,8 @@ const startServer = async () => {
   });
 };
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = app;

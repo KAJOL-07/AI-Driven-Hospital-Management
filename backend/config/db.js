@@ -9,14 +9,18 @@ try {
 }
 const mongoose = require("mongoose");
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/hospital_management";
-
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
+  }
+
+  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/hospital_management";
+
   try {
-    const conn = await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 60000,
-      connectTimeoutMS: 30000,
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 15000,
       family: 4,
     });
     console.log(`\n✅ MongoDB Connected Successfully!`);
@@ -25,6 +29,9 @@ const connectDB = async () => {
     return conn;
   } catch (error) {
     console.error("\n❌ MongoDB Connection Error:", error.message);
+    if (process.env.NODE_ENV === "production") {
+      throw error;
+    }
     console.error("   To resolve this:");
     console.error("   1) If using local MongoDB, ensure MongoDB is installed and running (net start MongoDB or mongod)");
     console.error("   2) Or if using MongoDB Atlas, update MONGODB_URI in backend/.env with your connection string.\n");
