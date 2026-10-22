@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mediflow-hospital-backend
+    name: mediflow-api
     env: node
     rootDir: backend
     plan: free
