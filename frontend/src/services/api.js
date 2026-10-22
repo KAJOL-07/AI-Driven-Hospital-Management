@@ -5,11 +5,11 @@
 // ============================================================
 
 const getBaseUrl = () => {
-  const envUrl =
-    (typeof process !== "undefined" &&
-      process.env &&
-      (process.env.REACT_APP_API_URL || process.env.API_URL)) ||
-    "";
+  // These values are replaced at build time by webpack DefinePlugin.
+  // Do NOT wrap them in typeof/process guards — that leaves a runtime
+  // reference to `process` which does not exist in the browser and
+  // causes a blank page.
+  const envUrl = process.env.REACT_APP_API_URL || process.env.API_URL || "";
 
   if (!envUrl) {
     return "http://localhost:5000/api";

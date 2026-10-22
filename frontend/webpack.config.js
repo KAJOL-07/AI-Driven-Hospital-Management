@@ -37,6 +37,15 @@ for (const envFile of possibleEnvFiles) {
   }
 }
 
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.argv.includes("production") ||
+  process.argv.includes("--mode=production");
+
+if (isProduction) {
+  process.env.NODE_ENV = "production";
+}
+
 const apiUrl =
   process.env.REACT_APP_API_URL ||
   process.env.API_URL ||
@@ -57,7 +66,21 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         type: "javascript/auto",
-        use: "babel-loader",
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              "@babel/preset-env",
+              [
+                "@babel/preset-react",
+                {
+                  runtime: "automatic",
+                  development: !isProduction,
+                },
+              ],
+            ],
+          },
+        },
       },
       {
         test: /\.css$/,
@@ -90,5 +113,5 @@ module.exports = {
     hot: true,
   },
 
-  mode: "development",
+  mode: isProduction ? "production" : "development",
 };
